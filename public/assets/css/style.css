@@ -26,6 +26,11 @@
 	width: 75%;
 }
 
+#game-board img {
+	display: none;
+	width: 200px;
+}
+
 #score {
 	background-color: cornsilk;
 	padding: 1rem;

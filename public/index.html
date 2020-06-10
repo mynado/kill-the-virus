@@ -14,19 +14,19 @@
 <body>
 	<div id="app">
 
-		<div id="start" class="container hide">
+		<div id="start" class="container">
 			<form id="username-form">
 				<div class="form-group">
 					<input type="text" id="username" class="form-control form-control-lg" required placeholder="Who are you?">
 				</div>
 
-				<button type="submit" class="btn btn-primary">Play!</button>
+				<button id="play-btn" type="submit" class="btn btn-primary">Play!</button>
 			</form> <!-- /#username-form -->
 		</div> <!-- / #start -->
 
-		<div id="game-wrapper">
+		<div id="game-wrapper" class="hide">
 			<div id="game-board">
-
+				<img id="virus-img" src="./assets/img/a.svg" alt="virus">
 
 
 			</div>
