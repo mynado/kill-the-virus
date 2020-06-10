@@ -1,0 +1,47 @@
+#start {
+	display: flex;
+	height: 100vh;
+	align-items: center;
+}
+
+#username-form {
+	margin: 0 auto;
+	/* text-align: center; */
+}
+
+.hide {
+	display: none !important;
+}
+
+#game-wrapper {
+	display: flex;
+	flex-wrap: wrap;
+	height: 100vh;
+	width: 100%;
+	margin: 0 auto;
+}
+
+#game-board {
+	background-color: bisque;
+	width: 75%;
+}
+
+#score {
+	background-color: cornsilk;
+	padding: 1rem;
+	text-align: center;
+	width: 25%;
+}
+
+@media (max-width: 768px) {
+	#game-board {
+		width: 100%;
+		height: 100vh;
+	}
+
+	#score {
+		width: 100%;
+	}
+
+}
+
