@@ -18,8 +18,8 @@ const virusImg = document.querySelector('#virus-img');
 let createdTime = null;
 
 const getRandomPosition = () => {
-	let x = 1000;
-	let y = 600;
+	let x = gameBoardEl.offsetWidth;
+	let y = gameBoardEl.offsetHeight;
 	let randomX = Math.abs((Math.random()*x) - 300);
 	let randomY = Math.abs((Math.random()*y) - 300);
 
