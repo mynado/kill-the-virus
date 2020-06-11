@@ -12,38 +12,29 @@ const gameWrapperEl = document.querySelector('#game-wrapper');
 const gameBoardEl = document.querySelector('#game-board');
 const virusImg = document.querySelector('#virus-img');
 
+let virusShown = null;
+let virusClicked = null;
+let reactionTime = null;
+let timesClicked = 10;
+
+
+
 /**
  * Randomly show virus
  */
-let createdTime = null;
-
-const getRandomPosition = () => {
-	let x = gameBoardEl.offsetWidth;
-	let y = gameBoardEl.offsetHeight;
-	let randomX = Math.abs((Math.random()*x) - 300);
-	let randomY = Math.abs((Math.random()*y) - 300);
-
-	return [randomX, randomY];
+const changePosition = (randomData) => {
+	virusImg.style.marginLeft= randomData.x + 'px';
+	virusImg.style.marginTop = randomData.y + 'px';
 }
 
-const changePosition = () => {
-	var xy = getRandomPosition();
-	var x = xy[0];
-	var y = xy[1];
-	virusImg.style.marginLeft= x + 'px';
-	virusImg.style.marginTop = y + 'px';
-}
-
-const showVirus = () => {
-	let randomNumber = Math.round(Math.random() * 5);
-
-	let time = randomNumber * 1000;
-	console.log(time);
-	changePosition();
+const showVirus = (randomData) => {
+	let time = randomData.time;
+	changePosition(randomData);
 	setTimeout(() => {
 		virusImg.style.display = "block";
-		createdTime = Date.now();
+		virusShown = Date.now();
 	}, time)
+
 }
 
 
@@ -60,8 +51,37 @@ usernameForm.addEventListener('submit', e => {
 			gameWrapperEl.classList.remove('hide');
 		}
 
-		showVirus();
+		if (timesClicked > 1) {
+			// showVirus(randomPositionDelay);
+		}
 
 	})
+})
+
+gameBoardEl.addEventListener('click', e => {
+	e.preventDefault();
+
+	if (e.target.tagName === 'IMG') {
+		virusClicked = Date.now();
+		reactionTime = (virusClicked - virusShown) / 1000;
+
+		console.log(reactionTime);
+		timesClicked = timesClicked - 1;
+
+		if (timesClicked > 1) {
+			socket.emit('click-virus', reactionTime);
+		} else {
+			virusImg.style.display = "none";
+		}
+	}
+
+});
+
+socket.on('random-position', (randomData) => {
+	showVirus(randomData);
+});
+
+socket.on('new-random-data', (newRandomData) => {
+	showVirus(newRandomData);
 })
 
