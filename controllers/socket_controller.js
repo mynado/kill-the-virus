@@ -44,17 +44,19 @@ function getRandomData() {
 	let randomY = Math.abs((Math.random()*height) - 300);
 
 	// random time
-	let randomNumber = Math.round(Math.random() * 5);
+	let randomNumber = Math.round(Math.random() * 3);
 	let time = randomNumber * 1000;
+
 
 	randomData = {
 		x: randomX,
 		y: randomY,
 		time: time,
+		image: randomNumber,
 	}
 
-	debug('randomPosition', randomData)
-	// this.broadcast.emit('random-position', randomData);
+	debug('randomData', randomData)
+
 	return randomData
 
 }

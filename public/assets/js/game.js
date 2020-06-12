@@ -28,9 +28,11 @@ const changePosition = (randomData) => {
 }
 
 const showVirus = (randomData) => {
+	console.log('randomData in showVirus', randomData)
 	let time = randomData.time;
 	changePosition(randomData);
 	setTimeout(() => {
+		virusImg.src = `./assets/img/${randomData.image}.svg`
 		virusImg.style.display = "block";
 		virusShown = Date.now();
 	}, time)
@@ -70,6 +72,7 @@ gameBoardEl.addEventListener('click', e => {
 
 		if (timesClicked > 1) {
 			socket.emit('click-virus', reactionTime);
+			virusImg.style.display = "none";
 		} else {
 			virusImg.style.display = "none";
 		}
