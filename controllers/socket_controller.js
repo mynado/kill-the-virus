@@ -5,6 +5,11 @@
 const debug = require('debug')('kill-the-virus:socket_controller');
 const users = {};
 let reactionTime = [];
+randomData = null;
+let rounds = null;
+let width = null;
+let height = null;
+let playerClicked = 0;
 
 /**
  * Get username of online players
@@ -34,12 +39,10 @@ function handleRegisterUser(username, callback) {
 /**
  * Get random virus position and delay time
  */
-function getRandomData() {
+function getRandomData(width, height) {
 	// random position
-	// let width = gameBoard.offsetWidth;
-	// let height = gameBoard.offsetHeight;
-	let width = 600;
-	let height = 400;
+	// width = gameBoardWidth;
+	// height = gameBoardHeight;
 	let randomX = Math.abs((Math.random()*width) - 300);
 	let randomY = Math.abs((Math.random()*height) - 300);
 
@@ -47,44 +50,80 @@ function getRandomData() {
 	let randomNumber = Math.round(Math.random() * 3);
 	let time = randomNumber * 1000;
 
-
 	randomData = {
 		x: randomX,
 		y: randomY,
 		time: time,
 		image: randomNumber,
 	}
-
-	debug('randomData', randomData)
-
 	return randomData
-
 }
 
-function handleClickVirus(reactionTime) {
-	debug(reactionTime);
-	this.emit('new-random-data', getRandomData());
 /**
- * Handle start game
+ * Handle match player
  */
-function handleStartGame(gameBoardWidth, gameBoardHeight) {
-	getRandomData(gameBoardWidth, gameBoardHeight)
+function handleMatchPlayer(players) {
+
+	if (players.length !== 2) {
+		return;
+	}
+	console.log('players:', players)
+	game.users = players;
+	console.log('game:', game)
+	this.emit('show-playBtn', players);
+	this.broadcast.emit('show-playBtn', players);
+}
+
+/**
+ * Handle Random Data
+ */
+function handleRandomData(gameBoardWidth, gameBoardHeight) {
+	width = gameBoardWidth;
+	height = gameBoardHeight;
+	getRandomData(width, height)
 	io.emit('random-data', randomData);
 }
 }
 
+function handleClickVirus(playerData) {
+	// show reaction time for player
+	let player = {
+		name: users[playerData.id],
+		id: playerData.id,
+		reactionTime: playerData.reactionTime,
+		clicked: playerData.clicked,
+		rounds: playerData.rounds,
+	}
+	playerClicked = playerClicked + player.clicked;
 
+	console.log('clicked', playerClicked)
+	if (playerClicked === 2 && player.rounds < 10) {
+		handleRandomData(width, height);
+	} else {
+		return;
+	}
+	playerClicked = 0;
+
+}
+
+function handleRandomVirus() {
+	console.log('randomData in handleRandomVirus', randomData)
+	// this.emit('new-random-data', randomData);
+}
 module.exports = function(socket) {
 	debug('A player connected!', socket.id);
-	debug('users', users)
-
+	io = this;
 	socket.on('disconnect', handleUserDisconnect);
 
 	socket.on('register-user', handleRegisterUser);
 
-	socket.emit('random-position', getRandomData());
+	//this.emit('random-data', getRandomData());
 
 	socket.on('click-virus', handleClickVirus);
 
-	socket.on('start-game', handleStartGame);
+	socket.on('match-player', handleMatchPlayer);
+	socket.on('get-random-virus', handleRandomVirus);
+
+	socket.on('start-game', handleRandomData);
+
 }

@@ -15,9 +15,8 @@ const virusImg = document.querySelector('#virus-img');
 let virusShown = null;
 let virusClicked = null;
 let reactionTime = null;
-let timesClicked = 10;
-
-
+let timesClicked = 0;
+let rounds = 0;
 
 /**
  * Randomly show virus
@@ -40,9 +39,15 @@ const showVirus = (randomData) => {
 }
 
 const showGame = (randomData) => {
+const showPlayBtn = () => {
+	playBtn.disabled = false;
+	playBtn.innerText = 'Play!';
+}
+
+const showGame = () => {
 	startEl.classList.add('hide');
 	gameWrapperEl.classList.remove('hide');
-	//showVirus(randomData);
+}
 }
 
 // get username and emit register-user-event to server
@@ -61,6 +66,7 @@ usernameForm.addEventListener('submit', e => {
 		if (timesClicked > 1) {
 			// showVirus(randomPositionDelay);
 		}
+		socket.emit('match-player', (status.onlinePlayers));
 
 	})
 playBtn.addEventListener('click', e => {
@@ -72,33 +78,42 @@ playBtn.addEventListener('click', e => {
 	socket.emit('start-game', gameBoardWidth, gameBoardHeight);
 })
 
+/**
+ * Click virus
+ */
 gameBoardEl.addEventListener('click', e => {
 	e.preventDefault();
+
+	console.log(socket)
 
 	if (e.target.tagName === 'IMG') {
 		virusClicked = Date.now();
 		reactionTime = (virusClicked - virusShown) / 1000;
-
 		console.log(reactionTime);
-		timesClicked = timesClicked - 1;
-
-		if (timesClicked > 1) {
-			socket.emit('click-virus', reactionTime);
-			virusImg.style.display = "none";
-		} else {
-			virusImg.style.display = "none";
+		timesClicked++;
+		rounds++
+		playerData = {
+			reactionTime,
+			id: socket.id,
+			clicked: timesClicked,
+			rounds,
 		}
+		console.log('timesClicked', timesClicked)
+		socket.emit('click-virus', playerData);
+		virusImg.style.display = "none";
+		timesClicked = 0;
 	}
 
 });
 
 socket.on('random-position', (randomData) => {
 socket.on('random-data', (randomData) => {
-	showGame(randomData);
+	showGame();
 	showVirus(randomData);
 });
 
-socket.on('new-random-data', (newRandomData) => {
-	showVirus(newRandomData);
+socket.on('show-playBtn', (players) => {
+	console.log('players in socket.on', players)
+	showPlayBtn(players);
 })
 
