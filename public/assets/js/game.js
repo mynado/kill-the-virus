@@ -48,6 +48,18 @@ const showGame = () => {
 	startEl.classList.add('hide');
 	gameWrapperEl.classList.remove('hide');
 }
+
+const showReactionTime = (players) => {
+	console.log('in function showReactionTime', players);
+	if (players.length === 2) {
+		document.querySelector('#round').innerText = `${players[0].rounds + 1}`
+		document.querySelector('#player-1').innerText = `${players[0].name}: ${players[0].reactionTime}`;
+		document.querySelector('#player-2').innerText = `${players[1].name}: ${players[1].reactionTime}`;
+	}
+
+	socket.emit('get-score', players);
+}
+
 }
 
 // get username and emit register-user-event to server
@@ -115,5 +127,9 @@ socket.on('random-data', (randomData) => {
 socket.on('show-playBtn', (players) => {
 	console.log('players in socket.on', players)
 	showPlayBtn(players);
+})
+
+socket.on('show-reaction-time', (player) => {
+	showReactionTime(player);
 })
 

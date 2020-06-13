@@ -10,6 +10,7 @@ let rounds = null;
 let width = null;
 let height = null;
 let playerClicked = 0;
+let players = [];
 
 /**
  * Get username of online players
@@ -93,6 +94,22 @@ function handleClickVirus(playerData) {
 		reactionTime: playerData.reactionTime,
 		clicked: playerData.clicked,
 		rounds: playerData.rounds,
+	}
+
+	players.push(player);
+	this.emit('show-reaction-time', players);
+	this.broadcast.emit('show-reaction-time', players);
+	if (players.length === 2) {
+		players = [];
+	}
+
+
+	// compare reaction time
+	if (savedReactionTime === null) {
+		savedReactionTime = player.reactionTime;
+		debug('savedReactionTime', savedReactionTime)
+	} else if (player.reactionTime < savedReactionTime) {
+		savedReactionTime = player.reactionTime;
 	}
 	playerClicked = playerClicked + player.clicked;
 
