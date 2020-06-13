@@ -39,6 +39,11 @@ const showVirus = (randomData) => {
 
 }
 
+const showGame = (randomData) => {
+	startEl.classList.add('hide');
+	gameWrapperEl.classList.remove('hide');
+	//showVirus(randomData);
+}
 
 // get username and emit register-user-event to server
 usernameForm.addEventListener('submit', e => {
@@ -58,6 +63,13 @@ usernameForm.addEventListener('submit', e => {
 		}
 
 	})
+playBtn.addEventListener('click', e => {
+	e.preventDefault();
+	showGame()
+	let gameBoardWidth = gameBoardEl.offsetWidth;
+	let gameBoardHeight =  gameBoardEl.offsetHeight;
+	console.log('click')
+	socket.emit('start-game', gameBoardWidth, gameBoardHeight);
 })
 
 gameBoardEl.addEventListener('click', e => {
@@ -81,6 +93,8 @@ gameBoardEl.addEventListener('click', e => {
 });
 
 socket.on('random-position', (randomData) => {
+socket.on('random-data', (randomData) => {
+	showGame(randomData);
 	showVirus(randomData);
 });
 

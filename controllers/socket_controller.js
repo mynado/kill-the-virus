@@ -64,6 +64,13 @@ function getRandomData() {
 function handleClickVirus(reactionTime) {
 	debug(reactionTime);
 	this.emit('new-random-data', getRandomData());
+/**
+ * Handle start game
+ */
+function handleStartGame(gameBoardWidth, gameBoardHeight) {
+	getRandomData(gameBoardWidth, gameBoardHeight)
+	io.emit('random-data', randomData);
+}
 }
 
 
@@ -79,4 +86,5 @@ module.exports = function(socket) {
 
 	socket.on('click-virus', handleClickVirus);
 
+	socket.on('start-game', handleStartGame);
 }
