@@ -66,16 +66,16 @@ const showPlayers = (players) => {
 
 const showReactionTime = (players) => {
 	console.log('in function showReactionTime', players);
+	let reactionTimeList = document.querySelector('#reaction-time')
+	reactionTimeList.innerHTML = null;
 	if (players.length === 2) {
 		document.querySelector('#round').innerText = `${players[0].rounds + 1}`;
 		players.forEach(player => {
-			let listItem = document.createElement("LI");
-			let time = document.createTextNode(`${player.name}: ${player.reactionTime}`);
-			listItem.appendChild(time);
-			document.querySelector('#reaction-time').appendChild(listItem);
+			reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
 		})
 	}
 	socket.emit('get-score', players);
+
 }
 
 }
