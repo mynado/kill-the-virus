@@ -1,11 +1,12 @@
 /**
  * Socket Controller
  */
-
 const debug = require('debug')('kill-the-virus:socket_controller');
+
 const users = {};
-let reactionTime = [];
+let io = null;
 randomData = null;
+let savedReactionTime = 100;
 let rounds = null;
 let width = null;
 let height = null;
@@ -19,22 +20,15 @@ function getOnlinePlayers() {
 	return Object.values(users);
 }
 
-function handleUserDisconnect() {
-	debug('Someone left the game.');
+/**
+ * Get player id and name
+ */
+function getPlayerIdAndName(id) {
+	console.log('player in getPlayerIdAndName', id)
 }
 
-function handleRegisterUser(username, callback) {
-	debug(`Player ${username} is connected to the game.`);
-	users[this.id] = username;
-	callback({
-		joinGame: true,
-		usernameInUse: false,
-		onlinePlayers: getOnlinePlayers(),
-	});
-
-	// broadcast to all connected sockets except ourselves
-	this.broadcast.emit('online-players', getOnlinePlayers());
-
+function handleUserDisconnect() {
+	debug('Someone left the game.');
 }
 
 /**
@@ -42,8 +36,6 @@ function handleRegisterUser(username, callback) {
  */
 function getRandomData(width, height) {
 	// random position
-	// width = gameBoardWidth;
-	// height = gameBoardHeight;
 	let randomX = Math.abs((Math.random()*width) - 300);
 	let randomY = Math.abs((Math.random()*height) - 300);
 
@@ -65,14 +57,22 @@ function getRandomData(width, height) {
  */
 function handleMatchPlayer(players) {
 
-	if (players.length !== 2) {
-		return;
+	if (players.length === 1) {
+		let msg = "Waiting for player"
+		this.emit('waiting-for-player', msg, players)
 	}
-	console.log('players:', players)
-	game.users = players;
-	console.log('game:', game)
-	this.emit('show-playBtn', players);
-	this.broadcast.emit('show-playBtn', players);
+
+	if (players.length === 2) {
+		msg = "Let's play!"
+		this.emit('show-playBtn', msg, players);
+		this.broadcast.emit('show-playBtn', msg, players);
+	}
+
+	if (players.length > 2) {
+		msg = 'There is already two players connected'
+		this.emit('too-many-players', msg, players)
+	}
+
 }
 
 /**
@@ -82,8 +82,8 @@ function handleRandomData(gameBoardWidth, gameBoardHeight) {
 	width = gameBoardWidth;
 	height = gameBoardHeight;
 	getRandomData(width, height)
-	io.emit('random-data', randomData);
-}
+	const players = getOnlinePlayers()
+	io.emit('random-data', randomData, players);
 }
 
 function handleClickVirus(playerData) {
@@ -99,15 +99,14 @@ function handleClickVirus(playerData) {
 	players.push(player);
 	this.emit('show-reaction-time', players);
 	this.broadcast.emit('show-reaction-time', players);
-	if (players.length === 2) {
-		players = [];
-	}
 
 
 	// compare reaction time
-	if (savedReactionTime === null) {
+	if (player.reactionTime < savedReactionTime) {
 		savedReactionTime = player.reactionTime;
 		debug('savedReactionTime', savedReactionTime)
+	}
+
 	} else if (player.reactionTime < savedReactionTime) {
 		savedReactionTime = player.reactionTime;
 	}
@@ -123,10 +122,22 @@ function handleClickVirus(playerData) {
 
 }
 
-function handleRandomVirus() {
-	console.log('randomData in handleRandomVirus', randomData)
-	// this.emit('new-random-data', randomData);
 }
+
+function handleRegisterUser(username, callback) {
+	debug(`Player ${username} is connected to .`);
+
+	users[this.id] = username;
+
+	callback({
+		joinGame: true,
+		usernameInUse: false,
+		onlinePlayers: getOnlinePlayers(),
+	});
+
+	debug('users', users[this.id])
+}
+
 module.exports = function(socket) {
 	debug('A player connected!', socket.id);
 	io = this;
@@ -134,13 +145,10 @@ module.exports = function(socket) {
 
 	socket.on('register-user', handleRegisterUser);
 
-	//this.emit('random-data', getRandomData());
-
 	socket.on('click-virus', handleClickVirus);
 
+	socket.on('save-player', getPlayerIdAndName);
 	socket.on('match-player', handleMatchPlayer);
-	socket.on('get-random-virus', handleRandomVirus);
-
 	socket.on('start-game', handleRandomData);
 
 }

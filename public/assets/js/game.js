@@ -7,6 +7,7 @@ const socket = io();
 
 const startEl = document.querySelector('#start');
 const usernameForm = document.querySelector('#username-form');
+const registerBtn = document.querySelector('#register-btn');
 const playBtn = document.querySelector('#play-btn');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const gameBoardEl = document.querySelector('#game-board');
@@ -17,6 +18,13 @@ let virusClicked = null;
 let reactionTime = null;
 let timesClicked = 0;
 let rounds = 0;
+let usersArray = null;
+
+let playerData = {
+		reactionTime,
+		id: null,
+		clicked: false,
+	}
 
 /**
  * Randomly show virus
@@ -35,18 +43,25 @@ const showVirus = (randomData) => {
 		virusImg.style.display = "block";
 		virusShown = Date.now();
 	}, time)
-
 }
 
-const showGame = (randomData) => {
 const showPlayBtn = () => {
 	playBtn.disabled = false;
 	playBtn.innerText = 'Play!';
 }
 
+const showMsg = (msg, players) => {
+	console.log(msg, players)
+	document.querySelector('#message').innerHTML = `<h2>${msg}</h2>`
+}
+
 const showGame = () => {
 	startEl.classList.add('hide');
 	gameWrapperEl.classList.remove('hide');
+}
+
+const showPlayers = (players) => {
+	document.querySelector('#versus').innerText = `${players[0]} vs ${players[1]}`
 }
 
 const showReactionTime = (players) => {
@@ -66,27 +81,23 @@ const showReactionTime = (players) => {
 usernameForm.addEventListener('submit', e => {
 	e.preventDefault();
 
-	username = document.querySelector('#username').value;
+	username = usernameForm.username.value;
 	socket.emit('register-user', username, (status) => {
+		console.log(status)
 		console.log('Server acknowledge the registration', status.onlinePlayers);
+		usersArray = status.onlinePlayers;
 
-		if (status.joinGame) {
-			startEl.classList.add('hide');
-			gameWrapperEl.classList.remove('hide');
-		}
-
-		if (timesClicked > 1) {
-			// showVirus(randomPositionDelay);
-		}
 		socket.emit('match-player', (status.onlinePlayers));
+		socket.emit('save-player', (status.onlinePlayers));
+	});
+})
 
-	})
 playBtn.addEventListener('click', e => {
 	e.preventDefault();
 	showGame()
 	let gameBoardWidth = gameBoardEl.offsetWidth;
 	let gameBoardHeight =  gameBoardEl.offsetHeight;
-	console.log('click')
+	console.log('socket', socket)
 	socket.emit('start-game', gameBoardWidth, gameBoardHeight);
 })
 
@@ -118,18 +129,28 @@ gameBoardEl.addEventListener('click', e => {
 
 });
 
-socket.on('random-position', (randomData) => {
-socket.on('random-data', (randomData) => {
+
+socket.on('random-data', (randomData, players) => {
 	showGame();
+	showPlayers(players);
 	showVirus(randomData);
 });
 
-socket.on('show-playBtn', (players) => {
+socket.on('show-playBtn', (msg, players) => {
 	console.log('players in socket.on', players)
-	showPlayBtn(players);
+	showMsg(msg, players);
+	showPlayBtn();
 })
 
 socket.on('show-reaction-time', (player) => {
 	showReactionTime(player);
 })
 
+
+socket.on('waiting-for-player', (msg, players) => {
+	showMsg(msg, players);
+})
+
+socket.on('too-many-players', (msg, players) => {
+	showMsg(msg, players);
+})
