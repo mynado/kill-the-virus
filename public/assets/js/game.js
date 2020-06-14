@@ -67,11 +67,14 @@ const showPlayers = (players) => {
 const showReactionTime = (players) => {
 	console.log('in function showReactionTime', players);
 	if (players.length === 2) {
-		document.querySelector('#round').innerText = `${players[0].rounds + 1}`
-		document.querySelector('#player-1').innerText = `${players[0].name}: ${players[0].reactionTime}`;
-		document.querySelector('#player-2').innerText = `${players[1].name}: ${players[1].reactionTime}`;
+		document.querySelector('#round').innerText = `${players[0].rounds + 1}`;
+		players.forEach(player => {
+			let listItem = document.createElement("LI");
+			let time = document.createTextNode(`${player.name}: ${player.reactionTime}`);
+			listItem.appendChild(time);
+			document.querySelector('#reaction-time').appendChild(listItem);
+		})
 	}
-
 	socket.emit('get-score', players);
 }
 
