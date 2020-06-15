@@ -88,7 +88,7 @@ const showWinner = (winner, tie, players) => {
 		if (tie) {
 			document.querySelector('#winner').innerText = tie;
 		} else {
-			document.querySelector('#winner').innerText = `Congrats ${winner}, you won!`;
+			document.querySelector('#winner').innerText = `The winner is ${winner}, congrats!`;
 		}
 	}
 }
