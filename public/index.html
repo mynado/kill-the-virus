@@ -32,25 +32,35 @@
 		</div> <!-- / #start -->
 
 		<div id="game-wrapper" class="hide">
+			<div id="score">
+				<h2 id="versus">Player 1 vs Player 2</h2>
+				<div id="score-right">
+					<div class="score-items">
+						<h5>Score</h5>
+						<ul id="score-list" class="hide"></ul>
+					</div>
+					<div class="score-items">
+						<h5>Reaction Time</h5>
+						<ul id="reaction-time" class="hide">
+						</ul>
+					</div>
+					<div class="score-items">
+						<h5>Round</h5>
+						<p id="round" class="hide"></p>
+					</div>
+				</div>
+			</div>
 			<div id="game-board">
 				<img id="virus-img" src="./assets/img/a.svg" alt="virus">
-			</div>
-			<div id="score">
-				<h1 id="versus">Player 1 vs Player 2</h1>
-				<h2>Score</h2>
-				<ul id="score-list"></ul>
-				<h2>Round</h2>
-				<p id="round"></p>
-				<h2>Reaction Time</h2>
-				<ol id="reaction-time">
-				</ol>
+				<div id="winner-wrapper" class="hide">
+					<h1 id="winner"></h1>
+					<h2>Score List</h2>
+					<ol id="winner-score"></ol>
+					<button id="play-again" class="btn btn-success">Play Again</button>
+				</div>
 			</div>
 		</div>
 
-		<div id="winner-wrapper" class="hide">
-			<h1 id="winner"></h1>
-			<button id="play-again" class="btn btn-success">Play Again</button>
-		</div>
 
 		</div>
 		<!-- /#game-wrapper -->

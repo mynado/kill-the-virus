@@ -65,9 +65,11 @@ const showPlayers = (players) => {
 
 const showReactionTime = (players) => {
 	let reactionTimeList = document.querySelector('#reaction-time')
+	let roundEl = document.querySelector('#round');
 	reactionTimeList.innerHTML = null;
-
-	document.querySelector('#round').innerText = `${players[0].rounds}`;
+	reactionTimeList.classList.remove('hide');
+	roundEl.classList.remove('hide')
+	roundEl.innerText = `${players[0].rounds}`;
 	players.forEach(player => {
 		reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
 	})
@@ -77,6 +79,7 @@ const showReactionTime = (players) => {
 const showScore = (players) => {
 	document.querySelector('#score-list').innerHTML = null;
 	console.log('players in showscore', players)
+	document.querySelector('#score-list').classList.remove('hide');
 	players.forEach(player => {
 		document.querySelector('#score-list').innerHTML += `<li>${player.name}: ${player.score}</li>`
 	})
@@ -84,9 +87,13 @@ const showScore = (players) => {
 
 const showWinner = (winner, players) => {
 	if (players.length === 2) {
-		gameWrapperEl.classList.add('hide');
+		console.log('players in winner',players)
 		document.querySelector('#winner-wrapper').classList.remove('hide');
-		document.querySelector('#winner').innerHTML = `<h1>The Winner is ${winner}</h1>`
+		document.querySelector('#winner').innerText = `Congrats ${winner}, you won!`;
+
+		players.forEach(player => {
+			document.querySelector('#winner-score').innerHTML += `<li>${player.name}: ${player.score}</li>`
+		})
 
 	}
 }

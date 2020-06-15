@@ -132,7 +132,6 @@ function handleClickVirus(playerData) {
 		player.score = score[this.id]
 	}
 
-	console.log(score)
 	io.emit('show-score', players)
 	// save all the clicks in an array
 	savedPlayersArray = players;
