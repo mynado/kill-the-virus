@@ -5,13 +5,14 @@ const debug = require('debug')('kill-the-virus:socket_controller');
 
 const users = {};
 let io = null;
-randomData = null;
+let randomData = null;
 let savedReactionTime = 100;
-let rounds = null;
+let score = {};
 let width = null;
 let height = null;
 let playerClicked = 0;
 let players = [];
+let savedPlayersArray = null;
 
 /**
  * Get username of online players
@@ -29,6 +30,7 @@ function getPlayerIdAndName(id) {
 
 function handleUserDisconnect() {
 	debug('Someone left the game.');
+	delete users[this.id];
 }
 
 /**
@@ -63,6 +65,7 @@ function handleMatchPlayer(players) {
 	}
 
 	if (players.length === 2) {
+		console.log(score)
 		msg = "Let's play!"
 		this.emit('show-playBtn', msg, players);
 		this.broadcast.emit('show-playBtn', msg, players);
@@ -72,7 +75,19 @@ function handleMatchPlayer(players) {
 		msg = 'There is already two players connected'
 		this.emit('too-many-players', msg, players)
 	}
+}
 
+/**
+ * Handle End Game
+ */
+function endGame(players) {
+	console.log('players in endGame', players)
+
+	const winner = players
+		.reduce((a, b) => a.score > b.score ? a : b)
+		.name;
+	console.log(winner)
+	io.emit('end-game', winner, players);
 }
 
 /**
@@ -96,10 +111,11 @@ function handleClickVirus(playerData) {
 		rounds: playerData.rounds,
 	}
 
+	// save player to array
 	players.push(player);
-	this.emit('show-reaction-time', players);
-	this.broadcast.emit('show-reaction-time', players);
-
+	if (players.length === 2) {
+		io.emit('show-reaction-time', players);
+	}
 
 	// compare reaction time
 	if (player.reactionTime < savedReactionTime) {
@@ -107,48 +123,56 @@ function handleClickVirus(playerData) {
 		debug('savedReactionTime', savedReactionTime)
 	}
 
-	} else if (player.reactionTime < savedReactionTime) {
-		savedReactionTime = player.reactionTime;
+	// check the fastest reaction time and assign score accordingly
+	if (player.reactionTime === savedReactionTime) {
+		score[this.id] = score[this.id] + 1;
+		player.score = score[this.id]
+	} else if (player.reactionTime !== savedReactionTime) {
+		score[this.id] = score[this.id] + 0;
+		player.score = score[this.id]
 	}
+
+	// save all the clicks in an array
+	savedPlayersArray = players;
+
+	// empty players array and
+	if (players.length === 2) {
+		players = [];
+		savedReactionTime = 100;
+	}
+
 	playerClicked = playerClicked + player.clicked;
 
-	console.log('clicked', playerClicked)
-	if (playerClicked === 2 && player.rounds < 10) {
+	if (playerClicked === 2 && player.rounds < 3) {
 		handleRandomData(width, height);
+	} else if (player.rounds === 3) {
+		endGame(savedPlayersArray);
 	} else {
-		return;
+		return
 	}
 	playerClicked = 0;
-
-}
-
 }
 
 function handleRegisterUser(username, callback) {
 	debug(`Player ${username} is connected to .`);
 
 	users[this.id] = username;
+	score[this.id] = 0;
 
 	callback({
 		joinGame: true,
 		usernameInUse: false,
 		onlinePlayers: getOnlinePlayers(),
 	});
-
-	debug('users', users[this.id])
 }
 
 module.exports = function(socket) {
 	debug('A player connected!', socket.id);
 	io = this;
 	socket.on('disconnect', handleUserDisconnect);
-
 	socket.on('register-user', handleRegisterUser);
-
 	socket.on('click-virus', handleClickVirus);
-
 	socket.on('save-player', getPlayerIdAndName);
 	socket.on('match-player', handleMatchPlayer);
 	socket.on('start-game', handleRandomData);
-
 }

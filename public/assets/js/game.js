@@ -45,13 +45,7 @@ const showVirus = (randomData) => {
 	}, time)
 }
 
-const showPlayBtn = () => {
-	playBtn.disabled = false;
-	playBtn.innerText = 'Play!';
-}
-
-const showMsg = (msg, players) => {
-	console.log(msg, players)
+const showMsg = (msg) => {
 	document.querySelector('#message').innerHTML = `<h2>${msg}</h2>`
 }
 
@@ -60,24 +54,54 @@ const showGame = () => {
 	gameWrapperEl.classList.remove('hide');
 }
 
+const showStartPage = () => {
+	document.querySelector('#winner-wrapper').classList.remove('hide');
+	startEl.classList.remove('hide');
+}
+
 const showPlayers = (players) => {
 	document.querySelector('#versus').innerText = `${players[0]} vs ${players[1]}`
 }
 
 const showReactionTime = (players) => {
-	console.log('in function showReactionTime', players);
 	let reactionTimeList = document.querySelector('#reaction-time')
 	reactionTimeList.innerHTML = null;
-	if (players.length === 2) {
-		document.querySelector('#round').innerText = `${players[0].rounds + 1}`;
-		players.forEach(player => {
-			reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
-		})
-	}
-	socket.emit('get-score', players);
+
+	document.querySelector('#round').innerText = `${players[0].rounds + 1}`;
+	players.forEach(player => {
+		reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
+	})
 
 }
 
+const showScore = (players) => {
+	document.querySelector('#score-list').innerHTML = null;
+	players.forEach(player => {
+		document.querySelector('#score-list').innerHTML += `<li>${player.name}: ${player.score}</li>`
+	})
+}
+
+const showWinner = (winner, players) => {
+	if (players.length === 2) {
+		gameWrapperEl.classList.add('hide');
+		document.querySelector('#winner-wrapper').classList.remove('hide');
+		document.querySelector('#winner').innerHTML = `<h1>The Winner is ${winner}</h1>`
+
+	}
+}
+
+const showPlayBtn = (players) => {
+	playBtn.disabled = false;
+	playBtn.innerText = 'Play!';
+
+	playBtn.addEventListener('click', e => {
+		e.preventDefault();
+		showGame()
+		let gameBoardWidth = gameBoardEl.offsetWidth;
+		let gameBoardHeight =  gameBoardEl.offsetHeight;
+		console.log('socket', socket)
+		socket.emit('start-game', gameBoardWidth, gameBoardHeight, players);
+	})
 }
 
 // get username and emit register-user-event to server
@@ -86,8 +110,6 @@ usernameForm.addEventListener('submit', e => {
 
 	username = usernameForm.username.value;
 	socket.emit('register-user', username, (status) => {
-		console.log(status)
-		console.log('Server acknowledge the registration', status.onlinePlayers);
 		usersArray = status.onlinePlayers;
 
 		socket.emit('match-player', (status.onlinePlayers));
@@ -95,13 +117,9 @@ usernameForm.addEventListener('submit', e => {
 	});
 })
 
-playBtn.addEventListener('click', e => {
+document.querySelector('#play-again').addEventListener('click', e => {
 	e.preventDefault();
-	showGame()
-	let gameBoardWidth = gameBoardEl.offsetWidth;
-	let gameBoardHeight =  gameBoardEl.offsetHeight;
-	console.log('socket', socket)
-	socket.emit('start-game', gameBoardWidth, gameBoardHeight);
+	window.location.reload()
 })
 
 /**
@@ -109,8 +127,6 @@ playBtn.addEventListener('click', e => {
  */
 gameBoardEl.addEventListener('click', e => {
 	e.preventDefault();
-
-	console.log(socket)
 
 	if (e.target.tagName === 'IMG') {
 		virusClicked = Date.now();
@@ -126,6 +142,7 @@ gameBoardEl.addEventListener('click', e => {
 		}
 		console.log('timesClicked', timesClicked)
 		socket.emit('click-virus', playerData);
+
 		virusImg.style.display = "none";
 		timesClicked = 0;
 	}
@@ -140,15 +157,17 @@ socket.on('random-data', (randomData, players) => {
 });
 
 socket.on('show-playBtn', (msg, players) => {
-	console.log('players in socket.on', players)
-	showMsg(msg, players);
-	showPlayBtn();
+	showMsg(msg);
+	showPlayBtn(players);
 })
 
 socket.on('show-reaction-time', (player) => {
 	showReactionTime(player);
 })
 
+socket.on('show-score', (players) => {
+	showScore(players)
+})
 
 socket.on('waiting-for-player', (msg, players) => {
 	showMsg(msg, players);
@@ -157,3 +176,7 @@ socket.on('waiting-for-player', (msg, players) => {
 socket.on('too-many-players', (msg, players) => {
 	showMsg(msg, players);
 })
+
+socket.on('end-game', (winner, players) => {
+	showWinner(winner, players)
+});
