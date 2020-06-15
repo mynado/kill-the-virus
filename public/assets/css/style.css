@@ -25,9 +25,15 @@
 #register-btn {
 	background-color: #7aa9ff;
 }
+#register-btn:hover {
+	background-color: #91b7fb;
+}
 
 #play-btn {
 	background-color: #32cc75;
+}
+#play-btn:hover {
+	background-color: #40ea8a;
 }
 
 #username-form {
@@ -99,7 +105,7 @@
 }
 
 #winner-wrapper {
-	background-color:rgb(195, 150, 239);
+	background-color:rgba(210, 172, 247, 0.63);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -119,6 +125,11 @@
 	color: #333;
 	border: none;
 }
+
+#winner-wrapper button:hover {
+	background-color: #40ea8a;
+}
+
 
 @media (max-width: 768px) {
 

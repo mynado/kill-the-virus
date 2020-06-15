@@ -115,7 +115,6 @@ usernameForm.addEventListener('submit', e => {
 		usersArray = status.onlinePlayers;
 
 		socket.emit('match-player', (status.onlinePlayers));
-		socket.emit('save-player', (status.onlinePlayers));
 	});
 })
 

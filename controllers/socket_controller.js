@@ -21,13 +21,6 @@ function getOnlinePlayers() {
 	return Object.values(users);
 }
 
-/**
- * Get player id and name
- */
-function getPlayerIdAndName(id) {
-	console.log('player in getPlayerIdAndName', id)
-}
-
 function handleUserDisconnect() {
 	debug('Someone left the game.');
 	delete users[this.id];
@@ -181,7 +174,6 @@ module.exports = function(socket) {
 	socket.on('disconnect', handleUserDisconnect);
 	socket.on('register-user', handleRegisterUser);
 	socket.on('click-virus', handleClickVirus);
-	socket.on('save-player', getPlayerIdAndName);
 	socket.on('match-player', handleMatchPlayer);
 	socket.on('start-game', handleRandomData);
 }
