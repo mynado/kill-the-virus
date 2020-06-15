@@ -76,6 +76,7 @@ const showReactionTime = (players) => {
 
 const showScore = (players) => {
 	document.querySelector('#score-list').innerHTML = null;
+	console.log('players in showscore', players)
 	players.forEach(player => {
 		document.querySelector('#score-list').innerHTML += `<li>${player.name}: ${player.score}</li>`
 	})
