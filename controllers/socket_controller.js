@@ -65,7 +65,6 @@ function handleMatchPlayer(players) {
 	}
 
 	if (players.length === 2) {
-		console.log(score)
 		msg = "Let's play!"
 		this.emit('show-playBtn', msg, players);
 		this.broadcast.emit('show-playBtn', msg, players);
@@ -81,12 +80,9 @@ function handleMatchPlayer(players) {
  * Handle End Game
  */
 function endGame(players) {
-	console.log('players in endGame', players)
-
 	const winner = players
 		.reduce((a, b) => a.score > b.score ? a : b)
 		.name;
-	console.log(winner)
 	io.emit('end-game', winner, players);
 }
 
@@ -132,7 +128,9 @@ function handleClickVirus(playerData) {
 		player.score = score[this.id]
 	}
 
-	io.emit('show-score', players)
+	if (players.length === 2) {
+		io.emit('show-score', players)
+	}
 	// save all the clicks in an array
 	savedPlayersArray = players;
 
@@ -144,9 +142,9 @@ function handleClickVirus(playerData) {
 
 	playerClicked = playerClicked + player.clicked;
 
-	if (playerClicked === 2 && player.rounds < 3) {
+	if (playerClicked === 2 && player.rounds < 10) {
 		handleRandomData(width, height);
-	} else if (player.rounds === 3) {
+	} else if (player.rounds === 10) {
 		endGame(savedPlayersArray);
 	} else {
 		return

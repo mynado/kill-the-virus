@@ -35,7 +35,6 @@ const changePosition = (randomData) => {
 }
 
 const showVirus = (randomData) => {
-	console.log('randomData in showVirus', randomData)
 	let time = randomData.time;
 	changePosition(randomData);
 	setTimeout(() => {
@@ -73,12 +72,10 @@ const showReactionTime = (players) => {
 	players.forEach(player => {
 		reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
 	})
-
 }
 
 const showScore = (players) => {
 	document.querySelector('#score-list').innerHTML = null;
-	console.log('players in showscore', players)
 	document.querySelector('#score-list').classList.remove('hide');
 	players.forEach(player => {
 		document.querySelector('#score-list').innerHTML += `<li>${player.name}: ${player.score}</li>`
@@ -87,7 +84,6 @@ const showScore = (players) => {
 
 const showWinner = (winner, players) => {
 	if (players.length === 2) {
-		console.log('players in winner',players)
 		document.querySelector('#winner-wrapper').classList.remove('hide');
 		document.querySelector('#winner').innerText = `Congrats ${winner}, you won!`;
 
@@ -99,17 +95,14 @@ const showWinner = (winner, players) => {
 }
 
 const showPlayBtn = (players) => {
-
 	registerBtn.classList.add('hide');
 	playBtn.classList.remove('hide');
-	// playBtn.innerText = 'Play!';
 
 	playBtn.addEventListener('click', e => {
 		e.preventDefault();
 		showGame()
 		let gameBoardWidth = gameBoardEl.offsetWidth;
 		let gameBoardHeight =  gameBoardEl.offsetHeight;
-		console.log('socket', socket)
 		socket.emit('start-game', gameBoardWidth, gameBoardHeight, players);
 	})
 }
