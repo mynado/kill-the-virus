@@ -1,5 +1,5 @@
 #app {
-	background-color: rgb(166, 211, 166);
+	background-color:rgb(167, 229, 235);
 	font-family: 'Luckiest Guy', cursive;
 }
 #start {
@@ -14,9 +14,20 @@
 	width: 30%;
 }
 
-#start button {
+#register-btn,
+#play-btn {
+	border: none;
+	color: #333;
 	margin: 0 auto;
 	width: 100%;
+}
+
+#register-btn {
+	background-color: #7aa9ff;
+}
+
+#play-btn {
+	background-color: #32cc75;
 }
 
 #username-form {
@@ -37,7 +48,7 @@
 }
 
 #game-board {
-	background-color: bisque;
+	background-color: rgb(167, 229, 235);
 	width: 100%;
 	height: 90vh;
 }
@@ -50,7 +61,7 @@
 #score {
 	display: flex;
 	justify-content: space-between;
-	background-color: cornsilk;
+	background-color: #a7e5eb;
 	font-size: 0.9rem;
 	padding: 1rem;
 	text-align: center;
@@ -88,7 +99,7 @@
 }
 
 #winner-wrapper {
-	background-color:rgb(166, 211, 166);
+	background-color:rgb(195, 150, 239);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -104,6 +115,9 @@
 #winner-wrapper button {
 	margin: 0 auto;
 	text-align: center;
+	background-color: #32cc75;
+	color: #333;
+	border: none;
 }
 
 @media (max-width: 768px) {

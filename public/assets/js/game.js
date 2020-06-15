@@ -82,15 +82,14 @@ const showScore = (players) => {
 	})
 }
 
-const showWinner = (winner, players) => {
+const showWinner = (winner, tie, players) => {
 	if (players.length === 2) {
 		document.querySelector('#winner-wrapper').classList.remove('hide');
-		document.querySelector('#winner').innerText = `Congrats ${winner}, you won!`;
-
-		players.forEach(player => {
-			document.querySelector('#winner-score').innerHTML += `<li>${player.name}: ${player.score}</li>`
-		})
-
+		if (tie) {
+			document.querySelector('#winner').innerText = tie;
+		} else {
+			document.querySelector('#winner').innerText = `Congrats ${winner}, you won!`;
+		}
 	}
 }
 
@@ -180,6 +179,6 @@ socket.on('too-many-players', (msg, players) => {
 	showMsg(msg, players);
 })
 
-socket.on('end-game', (winner, players) => {
-	showWinner(winner, players)
+socket.on('end-game', (winner, tie, players) => {
+	showWinner(winner, tie, players)
 });

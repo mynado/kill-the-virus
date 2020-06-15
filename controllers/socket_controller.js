@@ -83,7 +83,17 @@ function endGame(players) {
 	const winner = players
 		.reduce((a, b) => a.score > b.score ? a : b)
 		.name;
-	io.emit('end-game', winner, players);
+	const tie = players
+		.reduce((a, b) => {
+			if (a.score === b.score) {
+				return `It's a tie`;
+			} else {
+				return false;
+			}
+		});
+
+		console.log(tie)
+	io.emit('end-game', winner, tie, players);
 }
 
 /**
