@@ -60,7 +60,7 @@ function getRandomData(width, height) {
 function handleMatchPlayer(players) {
 
 	if (players.length === 1) {
-		let msg = "Waiting for player"
+		let msg = "Waiting for your opponent..."
 		this.emit('waiting-for-player', msg, players)
 	}
 
@@ -72,7 +72,7 @@ function handleMatchPlayer(players) {
 	}
 
 	if (players.length > 2) {
-		msg = 'There is already two players connected'
+		msg = 'There is already two players connected.'
 		this.emit('too-many-players', msg, players)
 	}
 }

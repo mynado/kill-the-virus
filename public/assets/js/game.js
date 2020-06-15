@@ -46,7 +46,7 @@ const showVirus = (randomData) => {
 }
 
 const showMsg = (msg) => {
-	document.querySelector('#message').innerHTML = `<h2>${msg}</h2>`
+	document.querySelector('#message').innerHTML = `<p>${msg}</p>`
 }
 
 const showGame = () => {
