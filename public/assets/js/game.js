@@ -67,7 +67,7 @@ const showReactionTime = (players) => {
 	let reactionTimeList = document.querySelector('#reaction-time')
 	reactionTimeList.innerHTML = null;
 
-	document.querySelector('#round').innerText = `${players[0].rounds + 1}`;
+	document.querySelector('#round').innerText = `${players[0].rounds}`;
 	players.forEach(player => {
 		reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
 	})
@@ -91,8 +91,10 @@ const showWinner = (winner, players) => {
 }
 
 const showPlayBtn = (players) => {
-	playBtn.disabled = false;
-	playBtn.innerText = 'Play!';
+
+	registerBtn.classList.add('hide');
+	playBtn.classList.remove('hide');
+	// playBtn.innerText = 'Play!';
 
 	playBtn.addEventListener('click', e => {
 		e.preventDefault();
