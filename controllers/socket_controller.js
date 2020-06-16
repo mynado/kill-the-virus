@@ -22,7 +22,7 @@ function getOnlinePlayers() {
 }
 
 function handleUserDisconnect() {
-	debug('Someone left the game.');
+	debug('Someone left the game.', users[this.id]);
 	delete users[this.id];
 }
 

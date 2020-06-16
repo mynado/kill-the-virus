@@ -18,7 +18,6 @@ let virusClicked = null;
 let reactionTime = null;
 let timesClicked = 0;
 let rounds = 0;
-let usersArray = null;
 
 let playerData = {
 		reactionTime,
@@ -44,6 +43,7 @@ const showVirus = (randomData) => {
 	}, time)
 }
 
+// show connection message
 const showMsg = (msg) => {
 	document.querySelector('#message').innerHTML = `<p>${msg}</p>`
 }
@@ -109,11 +109,8 @@ const showPlayBtn = (players) => {
 // get username and emit register-user-event to server
 usernameForm.addEventListener('submit', e => {
 	e.preventDefault();
-
 	username = usernameForm.username.value;
 	socket.emit('register-user', username, (status) => {
-		usersArray = status.onlinePlayers;
-
 		socket.emit('match-player', (status.onlinePlayers));
 	});
 })
@@ -123,16 +120,13 @@ document.querySelector('#play-again').addEventListener('click', e => {
 	window.location.reload()
 })
 
-/**
- * Click virus
- */
+// Click virus
 gameBoardEl.addEventListener('click', e => {
 	e.preventDefault();
 
 	if (e.target.tagName === 'IMG') {
 		virusClicked = Date.now();
 		reactionTime = (virusClicked - virusShown) / 1000;
-		console.log(reactionTime);
 		timesClicked++;
 		rounds++
 		playerData = {
@@ -141,15 +135,11 @@ gameBoardEl.addEventListener('click', e => {
 			clicked: timesClicked,
 			rounds,
 		}
-		console.log('timesClicked', timesClicked)
 		socket.emit('click-virus', playerData);
-
 		virusImg.style.display = "none";
 		timesClicked = 0;
 	}
-
 });
-
 
 socket.on('random-data', (randomData, players) => {
 	showGame();
