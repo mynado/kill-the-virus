@@ -165,6 +165,7 @@ socket.on('waiting-for-player', (msg, players) => {
 })
 
 socket.on('too-many-players', (msg, players) => {
+	showStartPage(players);
 	showMsg(msg, players);
 })
 
