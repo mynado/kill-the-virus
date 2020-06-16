@@ -51,21 +51,21 @@ function getRandomData(width, height) {
  * Handle match player
  */
 function handleMatchPlayer(players) {
+	// get user id
+	const userIds = Object.keys(users);
 
 	if (players.length === 1) {
-		let msg = "Waiting for your opponent..."
-		this.emit('waiting-for-player', msg, players)
+		this.emit('waiting-for-player')
 	}
 
 	if (players.length === 2) {
-		msg = "Let's play!"
-		this.emit('show-playBtn', msg, players);
-		this.broadcast.emit('show-playBtn', msg, players);
+		userIds.forEach(id => {
+			io.to(id).emit('start-game', players)
+		})
 	}
 
 	if (players.length > 2) {
-		msg = 'There is already two players connected.'
-		this.emit('too-many-players', msg, players)
+		this.emit('too-many-players', players)
 	}
 }
 
@@ -84,9 +84,11 @@ function endGame(players) {
 				return false;
 			}
 		});
-
-		console.log(tie)
-	io.emit('end-game', winner, tie, players);
+	// get user id
+	const userIds = Object.keys(users);
+	userIds.forEach(id => {
+		io.to(id).emit('end-game', winner, tie, players)
+	})
 }
 
 /**
@@ -100,6 +102,9 @@ function handleRandomData(gameBoardWidth, gameBoardHeight) {
 	io.emit('random-data', randomData, players);
 }
 
+/**
+ * Handle Virus Click
+ */
 function handleClickVirus(playerData) {
 	// show reaction time for player
 	let player = {
@@ -119,7 +124,6 @@ function handleClickVirus(playerData) {
 	// compare reaction time
 	if (player.reactionTime < savedReactionTime) {
 		savedReactionTime = player.reactionTime;
-		debug('savedReactionTime', savedReactionTime)
 	}
 
 	// check the fastest reaction time and assign score accordingly
@@ -155,6 +159,9 @@ function handleClickVirus(playerData) {
 	playerClicked = 0;
 }
 
+/**
+ * Handle Register User
+ */
 function handleRegisterUser(username, callback) {
 	debug(`Player ${username} is connected to .`);
 
@@ -175,5 +182,5 @@ module.exports = function(socket) {
 	socket.on('register-user', handleRegisterUser);
 	socket.on('click-virus', handleClickVirus);
 	socket.on('match-player', handleMatchPlayer);
-	socket.on('start-game', handleRandomData);
+	socket.on('get-random-data', handleRandomData);
 }

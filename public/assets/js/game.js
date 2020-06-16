@@ -25,14 +25,13 @@ let playerData = {
 		clicked: false,
 	}
 
-/**
- * Randomly show virus
- */
+// Change Virus Position
 const changePosition = (randomData) => {
 	virusImg.style.marginLeft= randomData.x + 'px';
 	virusImg.style.marginTop = randomData.y + 'px';
 }
 
+// Show random virus in random position and randomly dealy
 const showVirus = (randomData) => {
 	let time = randomData.time;
 	changePosition(randomData);
@@ -43,23 +42,16 @@ const showVirus = (randomData) => {
 	}, time)
 }
 
-// show connection message
-const showMsg = (msg) => {
-	document.querySelector('#message').innerHTML = `<p>${msg}</p>`
-}
-
+// hide start page and show game page
 const showGame = () => {
 	startEl.classList.add('hide');
 	gameWrapperEl.classList.remove('hide');
 }
 
+// show start page
 const showStartPage = () => {
 	document.querySelector('#winner-wrapper').classList.remove('hide');
 	startEl.classList.remove('hide');
-}
-
-const showPlayers = (players) => {
-	document.querySelector('#versus').innerText = `${players[0]} vs ${players[1]}`
 }
 
 const showReactionTime = (players) => {
@@ -93,17 +85,12 @@ const showWinner = (winner, tie, players) => {
 	}
 }
 
-const showPlayBtn = (players) => {
+const startGame = (players) => {
 	registerBtn.classList.add('hide');
-	playBtn.classList.remove('hide');
-
-	playBtn.addEventListener('click', e => {
-		e.preventDefault();
-		showGame()
-		let gameBoardWidth = gameBoardEl.offsetWidth;
-		let gameBoardHeight =  gameBoardEl.offsetHeight;
-		socket.emit('start-game', gameBoardWidth, gameBoardHeight, players);
-	})
+	showGame()
+	let gameBoardWidth = gameBoardEl.offsetWidth;
+	let gameBoardHeight =  gameBoardEl.offsetHeight;
+	socket.emit('get-random-data', gameBoardWidth, gameBoardHeight, players);
 }
 
 // get username and emit register-user-event to server
@@ -142,14 +129,12 @@ gameBoardEl.addEventListener('click', e => {
 });
 
 socket.on('random-data', (randomData, players) => {
-	showGame();
-	showPlayers(players);
+	document.querySelector('#versus').innerText = `${players[0]} vs ${players[1]}`
 	showVirus(randomData);
 });
 
-socket.on('show-playBtn', (msg, players) => {
-	showMsg(msg);
-	showPlayBtn(players);
+socket.on('start-game', (players) => {
+	startGame(players);
 })
 
 socket.on('show-reaction-time', (player) => {
@@ -160,15 +145,19 @@ socket.on('show-score', (players) => {
 	showScore(players)
 })
 
-socket.on('waiting-for-player', (msg, players) => {
-	showMsg(msg, players);
+socket.on('waiting-for-player', () => {
+	registerBtn.innerText = 'Waiting for an opponent...'
 })
 
-socket.on('too-many-players', (msg, players) => {
+socket.on('too-many-players', (players) => {
 	showStartPage(players);
-	showMsg(msg, players);
+	document.querySelector('#message').innerHTML = `<p>There are already two players connected.</p>`
 })
 
 socket.on('end-game', (winner, tie, players) => {
 	showWinner(winner, tie, players)
 });
+
+socket.on('change-button-text', () => {
+	registerBtn.innerText = 'Start Game!'
+})
