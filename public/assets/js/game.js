@@ -12,6 +12,9 @@ const playBtn = document.querySelector('#play-btn');
 const gameWrapperEl = document.querySelector('#game-wrapper');
 const gameBoardEl = document.querySelector('#game-board');
 const virusImg = document.querySelector('#virus-img');
+let reactionTimeList = document.querySelector('#reaction-time')
+let roundEl = document.querySelector('#round');
+let scoreEl = document.querySelector('#score-list');
 
 let virusShown = null;
 let virusClicked = null;
@@ -55,8 +58,6 @@ const showStartPage = () => {
 }
 
 const showReactionTime = (players) => {
-	let reactionTimeList = document.querySelector('#reaction-time')
-	let roundEl = document.querySelector('#round');
 	reactionTimeList.innerHTML = null;
 	reactionTimeList.classList.remove('hide');
 	roundEl.classList.remove('hide')
@@ -67,10 +68,10 @@ const showReactionTime = (players) => {
 }
 
 const showScore = (players) => {
-	document.querySelector('#score-list').innerHTML = null;
-	document.querySelector('#score-list').classList.remove('hide');
+	scoreEl.innerHTML = null;
+	scoreEl.classList.remove('hide');
 	players.forEach(player => {
-		document.querySelector('#score-list').innerHTML += `<li>${player.name}: ${player.score}</li>`
+		scoreEl.innerHTML += `<li>${player.name}: ${player.score}</li>`
 	})
 }
 
@@ -87,6 +88,9 @@ const showWinner = (winner, tie, players) => {
 
 const startGame = (players) => {
 	registerBtn.classList.add('hide');
+	reactionTimeList.classList.add('hide');
+	roundEl.classList.add('hide')
+	scoreEl.classList.add('hide');
 	showGame()
 	let gameBoardWidth = gameBoardEl.offsetWidth;
 	let gameBoardHeight =  gameBoardEl.offsetHeight;
@@ -96,6 +100,7 @@ const startGame = (players) => {
 // get username and emit register-user-event to server
 usernameForm.addEventListener('submit', e => {
 	e.preventDefault();
+	document.querySelector('#winner-wrapper').classList.add('hide');
 	username = usernameForm.username.value;
 	socket.emit('register-user', username, (status) => {
 		socket.emit('match-player', (status.onlinePlayers));

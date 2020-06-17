@@ -51,6 +51,11 @@ function getRandomData(width, height) {
  * Handle match player
  */
 function handleMatchPlayer(players) {
+	randomData = null;
+	savedReactionTime = 100;
+	// score = {};
+	savedPlayersArray = null;
+	playerClicked = 0;
 	// get user id
 	const userIds = Object.keys(users);
 
@@ -65,6 +70,7 @@ function handleMatchPlayer(players) {
 	}
 
 	if (players.length > 2) {
+		delete users[this.id];
 		this.emit('too-many-players', players)
 	}
 }
@@ -85,6 +91,7 @@ function endGame(players) {
 			}
 		});
 	// get user id
+	console.log(users)
 	const userIds = Object.keys(users);
 	userIds.forEach(id => {
 		io.to(id).emit('end-game', winner, tie, players)
@@ -164,15 +171,24 @@ function handleClickVirus(playerData) {
  */
 function handleRegisterUser(username, callback) {
 	debug(`Player ${username} is connected to .`);
-
-	users[this.id] = username;
-	score[this.id] = 0;
-
-	callback({
-		joinGame: true,
-		usernameInUse: false,
-		onlinePlayers: getOnlinePlayers(),
-	});
+	// add id and username to users
+	if (Object.keys(users).length >= 0 ) {
+		users[this.id] = username;
+		score[this.id] = 0;
+		callback({
+			joinGame: true,
+			usernameInUse: false,
+			onlinePlayers: getOnlinePlayers(),
+		});
+	} else if (Object.keys(users).length < 3) {
+		users[this.id] = username;
+		score[this.id] = 0;
+		callback({
+			joinGame: true,
+			usernameInUse: false,
+			onlinePlayers: getOnlinePlayers(),
+		});
+	}
 }
 
 module.exports = function(socket) {
