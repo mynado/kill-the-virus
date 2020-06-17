@@ -157,19 +157,22 @@ function handleClickVirus(playerData) {
 	}
 
 	// compare reaction time
-	if (player.reactionTime <= savedReactionTime) {
 	if (player.reactionTime < savedReactionTime) {
 		savedReactionTime = player.reactionTime;
 	}
 	console.log('score in before if: ', score)
+	console.log('player.reactionTime: ', player.reactionTime);
+	console.log('savedReactionTime: ', savedReactionTime);
 
 	// check the fastest reaction time and assign score accordingly
 	if (player.reactionTime === savedReactionTime) {
 		score[this.id] = score[this.id] + 1;
 		player.score = score[this.id]
+		console.log('player score: ', player.score)
 	} else if (player.reactionTime !== savedReactionTime) {
 		score[this.id] = score[this.id] + 0;
 		player.score = score[this.id]
+		console.log('player score: ', player.score)
 	}
 
 	if (players.length === 2) {
@@ -181,7 +184,6 @@ function handleClickVirus(playerData) {
 	// save all the clicks in an array to get the highest score
 	savedPlayersArray = players;
 
-	// empty players array and
 	// empty players array and reset reaction time
 	if (players.length === 2) {
 		players = [];
