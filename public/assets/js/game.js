@@ -93,8 +93,10 @@ const showWinner = (winner, tie, players) => {
 		document.querySelector('#winner-wrapper').classList.remove('hide');
 		if (tie) {
 			document.querySelector('#winner').innerText = tie;
+			socket.emit('reset')
 		} else {
 			document.querySelector('#winner').innerText = `The winner is ${winner}, congrats!`;
+			socket.emit('reset')
 		}
 	}
 }

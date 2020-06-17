@@ -4,7 +4,7 @@
 const debug = require('debug')('kill-the-virus:socket_controller');
 
 let io = null;
-const users = {};
+let users = {};
 let players = [];
 let savedPlayersArray = null;
 
@@ -58,12 +58,6 @@ function getRandomData(width, height) {
  * Handle match player
  */
 function handleMatchPlayer(players) {
-	// reset
-	randomData = null;
-	savedReactionTime = 100;
-	savedPlayersArray = null;
-	playerClicked = 0;
-
 	// get user id
 	const userIds = Object.keys(users);
 
@@ -104,6 +98,14 @@ function endGame(players) {
 	userIds.forEach(id => {
 		io.to(id).emit('end-game', winner, tie, players)
 	})
+}
+
+function handleReset() {
+	randomData = null;
+	savedReactionTime = 100;
+	savedPlayersArray = null;
+	playerClicked = 0;
+	users = {};
 }
 
 function handleMeasurements(_width, _height) {
@@ -213,4 +215,5 @@ module.exports = function(socket) {
 	socket.on('match-player', handleMatchPlayer);
 	socket.on('get-random-data', handleRandomData);
 	socket.on('send-measurements', handleMeasurements)
+	socket.on('reset', handleReset)
 }
