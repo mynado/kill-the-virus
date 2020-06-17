@@ -157,7 +157,7 @@ function handleClickVirus(playerData) {
 	}
 
 	// compare reaction time
-	if (player.reactionTime < savedReactionTime) {
+	if (player.reactionTime <= savedReactionTime) {
 		savedReactionTime = player.reactionTime;
 	}
 	console.log('score in before if: ', score)
