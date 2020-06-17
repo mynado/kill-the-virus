@@ -47,7 +47,7 @@ const changePosition = (randomData) => {
 	virusImg.style.marginTop = randomData.y + 'px';
 }
 
-// Show random virus in random position and randomly dealy
+// Show random virus in random position and randomly delay
 const showVirus = (randomData) => {
 	let time = randomData.time;
 	changePosition(randomData);
@@ -70,6 +70,7 @@ const showStartPage = () => {
 	startEl.classList.remove('hide');
 }
 
+// show reaction time
 const showReactionTime = (players) => {
 	reactionTimeList.innerHTML = null;
 	reactionTimeList.classList.remove('hide');
@@ -80,6 +81,7 @@ const showReactionTime = (players) => {
 	})
 }
 
+// show score
 const showScore = (players) => {
 	scoreEl.innerHTML = null;
 	scoreEl.classList.remove('hide');
@@ -88,6 +90,7 @@ const showScore = (players) => {
 	})
 }
 
+// show winner and play again button
 const showWinner = (winner, tie, players) => {
 	if (players.length === 2) {
 		document.querySelector('#winner-wrapper').classList.remove('hide');
@@ -121,6 +124,7 @@ usernameForm.addEventListener('submit', e => {
 	});
 })
 
+// play again
 document.querySelector('#play-again').addEventListener('click', e => {
 	e.preventDefault();
 	window.location.reload()

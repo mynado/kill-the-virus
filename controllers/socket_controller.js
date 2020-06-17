@@ -100,6 +100,9 @@ function endGame(players) {
 	})
 }
 
+/**
+ * Handle reset values
+ */
 function handleReset() {
 	randomData = null;
 	savedReactionTime = 100;
@@ -108,9 +111,13 @@ function handleReset() {
 	users = {};
 }
 
+/**
+ * Handle measurements
+ */
 function handleMeasurements(_width, _height) {
 	widthArr.push(_width)
 	heightArr.push(_height)
+	// get the smallest value in array
 	width = Math.min(...widthArr)
 	height = Math.min(...heightArr)
 }
