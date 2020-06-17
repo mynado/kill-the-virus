@@ -22,12 +22,27 @@ let reactionTime = null;
 let timesClicked = 0;
 let rounds = 0;
 
+let gameBoardWidth = [];
+let gameBoardHeight = [];
+let width = null;
+let height = null;
+
 let playerData = {
 		reactionTime,
 		id: null,
 		clicked: false,
 	}
 
+// get start element width and height
+const getMeasurements = () => {
+	gameBoardWidth.push(startEl.offsetWidth)
+	gameBoardHeight.push(startEl.offsetHeight - 100)
+	width = Math.min(...gameBoardWidth)
+	height = Math.min(...gameBoardHeight)
+}
+
+// get the measurements onload
+getMeasurements();
 // Change Virus Position
 const changePosition = (randomData) => {
 	virusImg.style.marginLeft= randomData.x + 'px';
@@ -86,15 +101,14 @@ const showWinner = (winner, tie, players) => {
 	}
 }
 
+// start the game
 const startGame = (players) => {
 	registerBtn.classList.add('hide');
 	reactionTimeList.classList.add('hide');
 	roundEl.classList.add('hide')
 	scoreEl.classList.add('hide');
 	showGame()
-	let gameBoardWidth = gameBoardEl.offsetWidth;
-	let gameBoardHeight =  gameBoardEl.offsetHeight;
-	socket.emit('get-random-data', gameBoardWidth, gameBoardHeight, players);
+	socket.emit('get-random-data', width, height, players);
 }
 
 // get username and emit register-user-event to server
