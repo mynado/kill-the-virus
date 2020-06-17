@@ -22,8 +22,8 @@ let reactionTime = null;
 let timesClicked = 0;
 let rounds = 0;
 
-let gameBoardWidth = [];
-let gameBoardHeight = [];
+let startElWidth = [];
+let startElHeight = [];
 let width = null;
 let height = null;
 
@@ -35,10 +35,10 @@ let playerData = {
 
 // get start element width and height
 const getMeasurements = () => {
-	gameBoardWidth.push(startEl.offsetWidth)
-	gameBoardHeight.push(startEl.offsetHeight - 100)
-	width = Math.min(...gameBoardWidth)
-	height = Math.min(...gameBoardHeight)
+	startElWidth.push(startEl.offsetWidth)
+	startElHeight.push(startEl.offsetHeight - 100)
+	width = Math.min(...startElWidth)
+	height = Math.min(...startElHeight)
 }
 
 // get the measurements onload

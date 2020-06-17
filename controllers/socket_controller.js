@@ -101,9 +101,9 @@ function endGame(players) {
 /**
  * Handle Random Data
  */
-function handleRandomData(gameBoardWidth, gameBoardHeight) {
-	width = gameBoardWidth;
-	height = gameBoardHeight;
+function handleRandomData(startElWidth, startElHeight) {
+	width = startElWidth;
+	height = startElHeight;
 	getRandomData(width, height)
 	const players = getOnlinePlayers()
 	io.emit('random-data', randomData, players);
