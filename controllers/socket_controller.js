@@ -3,16 +3,18 @@
  */
 const debug = require('debug')('kill-the-virus:socket_controller');
 
-const users = {};
 let io = null;
-let randomData = null;
-let savedReactionTime = 100;
-let score = {};
-let width = null;
-let height = null;
-let playerClicked = 0;
+const users = {};
 let players = [];
 let savedPlayersArray = null;
+
+let randomData = null;
+let width = null;
+let height = null;
+
+let playerClicked = 0;
+let savedReactionTime = 100;
+let score = {};
 
 /**
  * Get username of online players
@@ -21,6 +23,9 @@ function getOnlinePlayers() {
 	return Object.values(users);
 }
 
+/**
+ * Handle disconnection
+ */
 function handleUserDisconnect() {
 	debug('Someone left the game.', users[this.id]);
 	delete users[this.id];
@@ -51,11 +56,6 @@ function getRandomData(width, height) {
  * Handle match player
  */
 function handleMatchPlayer(players) {
-	randomData = null;
-	savedReactionTime = 100;
-	// score = {};
-	savedPlayersArray = null;
-	playerClicked = 0;
 	// get user id
 	const userIds = Object.keys(users);
 
