@@ -93,7 +93,6 @@ function endGame(players) {
 			}
 		});
 	// get user id
-	console.log(users)
 	const userIds = Object.keys(users);
 	userIds.forEach(id => {
 		io.to(id).emit('end-game', winner, tie, players)
@@ -109,6 +108,7 @@ function handleReset() {
 	savedPlayersArray = null;
 	playerClicked = 0;
 	users = {};
+	score = {};
 }
 
 /**
@@ -160,6 +160,7 @@ function handleClickVirus(playerData) {
 	if (player.reactionTime < savedReactionTime) {
 		savedReactionTime = player.reactionTime;
 	}
+	console.log('score in before if: ', score)
 
 	// check the fastest reaction time and assign score accordingly
 	if (player.reactionTime === savedReactionTime) {
@@ -214,11 +215,17 @@ function handleRegisterUser(username, callback) {
 	} else if (Object.keys(users).length < 3) {
 		users[this.id] = username;
 		score[this.id] = 0;
+
 		callback({
 			joinGame: true,
 			usernameInUse: false,
 			onlinePlayers: getOnlinePlayers(),
 		});
+	}
+
+	if (Object.keys(users).length === 3) {
+		delete users[this.id]
+		delete score[this.id]
 	}
 }
 
