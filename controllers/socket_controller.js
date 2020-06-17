@@ -11,6 +11,8 @@ let savedPlayersArray = null;
 let randomData = null;
 let width = null;
 let height = null;
+let widthArr = []
+let heightArr = [];
 
 let playerClicked = 0;
 let savedReactionTime = 100;
@@ -56,6 +58,12 @@ function getRandomData(width, height) {
  * Handle match player
  */
 function handleMatchPlayer(players) {
+	// reset
+	randomData = null;
+	savedReactionTime = 100;
+	savedPlayersArray = null;
+	playerClicked = 0;
+
 	// get user id
 	const userIds = Object.keys(users);
 
@@ -98,12 +106,17 @@ function endGame(players) {
 	})
 }
 
+function handleMeasurements(_width, _height) {
+	widthArr.push(_width)
+	heightArr.push(_height)
+	width = Math.min(...widthArr)
+	height = Math.min(...heightArr)
+}
+
 /**
  * Handle Random Data
  */
-function handleRandomData(startElWidth, startElHeight) {
-	width = startElWidth;
-	height = startElHeight;
+function handleRandomData() {
 	getRandomData(width, height)
 	const players = getOnlinePlayers()
 	io.emit('random-data', randomData, players);
@@ -145,7 +158,7 @@ function handleClickVirus(playerData) {
 	if (players.length === 2) {
 		io.emit('show-score', players)
 	}
-	// save all the clicks in an array
+	// save all the clicks in an array to get the highest score
 	savedPlayersArray = players;
 
 	// empty players array and
@@ -199,4 +212,5 @@ module.exports = function(socket) {
 	socket.on('click-virus', handleClickVirus);
 	socket.on('match-player', handleMatchPlayer);
 	socket.on('get-random-data', handleRandomData);
+	socket.on('send-measurements', handleMeasurements)
 }

@@ -22,8 +22,6 @@ let reactionTime = null;
 let timesClicked = 0;
 let rounds = 0;
 
-let startElWidth = [];
-let startElHeight = [];
 let width = null;
 let height = null;
 
@@ -35,14 +33,14 @@ let playerData = {
 
 // get start element width and height
 const getMeasurements = () => {
-	startElWidth.push(startEl.offsetWidth)
-	startElHeight.push(startEl.offsetHeight - 100)
-	width = Math.min(...startElWidth)
-	height = Math.min(...startElHeight)
+	width = startEl.offsetWidth;
+	height = startEl.offsetHeight;
+	socket.emit('send-measurements', width, height);
 }
 
 // get the measurements onload
 getMeasurements();
+
 // Change Virus Position
 const changePosition = (randomData) => {
 	virusImg.style.marginLeft= randomData.x + 'px';
