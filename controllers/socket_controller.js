@@ -121,7 +121,10 @@ function handleMeasurements(_width, _height) {
 function handleRandomData() {
 	getRandomData(width, height)
 	const players = getOnlinePlayers()
-	io.emit('random-data', randomData, players);
+	const userIds = Object.keys(users);
+	userIds.forEach(id => {
+		io.to(id).emit('random-data', randomData, players)
+	})
 }
 
 /**
@@ -140,7 +143,10 @@ function handleClickVirus(playerData) {
 	// save player to array
 	players.push(player);
 	if (players.length === 2) {
-		io.emit('show-reaction-time', players);
+		const userIds = Object.keys(users);
+		userIds.forEach(id => {
+			io.to(id).emit('show-reaction-time', players)
+		})
 	}
 
 	// compare reaction time
@@ -158,7 +164,10 @@ function handleClickVirus(playerData) {
 	}
 
 	if (players.length === 2) {
-		io.emit('show-score', players)
+		const userIds = Object.keys(users);
+		userIds.forEach(id => {
+			io.to(id).emit('show-score', players)
+		})
 	}
 	// save all the clicks in an array to get the highest score
 	savedPlayersArray = players;
