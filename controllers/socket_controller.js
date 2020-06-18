@@ -15,7 +15,7 @@ let widthArr = []
 let heightArr = [];
 
 let playerClicked = 0;
-let savedReactionTime = 100;
+let savedReactionTime = {};
 let score = {};
 
 /**
@@ -104,7 +104,7 @@ function endGame(players) {
  */
 function handleReset() {
 	randomData = null;
-	savedReactionTime = 100;
+	savedReactionTime = {};
 	savedPlayersArray = null;
 	playerClicked = 0;
 	users = {};
@@ -156,38 +156,39 @@ function handleClickVirus(playerData) {
 		})
 	}
 
-	// compare reaction time
-	if (player.reactionTime < savedReactionTime) {
-		savedReactionTime = player.reactionTime;
-	}
-	console.log('score in before if: ', score)
-	console.log('player.reactionTime: ', player.reactionTime);
-	console.log('savedReactionTime: ', savedReactionTime);
+	// save reaction time in score object
+	savedReactionTime[this.id] = player.reactionTime;
 
-	// check the fastest reaction time and assign score accordingly
-	if (player.reactionTime === savedReactionTime) {
-		score[this.id] = score[this.id] + 1;
-		player.score = score[this.id]
-		console.log('player score: ', player.score)
-	} else if (player.reactionTime !== savedReactionTime) {
-		score[this.id] = score[this.id] + 0;
-		player.score = score[this.id]
-		console.log('player score: ', player.score)
-	}
-
+	// compare reaction time and save new time
 	if (players.length === 2) {
+		let fastPlayerId = Object.keys(savedReactionTime).reduce((a, b) => savedReactionTime[a] < savedReactionTime[b] ? a : b);
+
+		let slowPlayerId = Object.keys(savedReactionTime).reduce((a, b) => savedReactionTime[a] > savedReactionTime[b] ? a : b);
+
+		players.forEach(player => {
+			if (player.id === fastPlayerId) {
+				score[fastPlayerId]++;
+				player.score = score[fastPlayerId];
+			}
+			if (player.id === slowPlayerId) {
+				score[slowPlayerId] = score[slowPlayerId] + 0;
+				player.score = score[slowPlayerId];
+			}
+		})
+
 		const userIds = Object.keys(users);
 		userIds.forEach(id => {
 			io.to(id).emit('show-score', players)
 		})
 	}
+
 	// save all the clicks in an array to get the highest score
 	savedPlayersArray = players;
 
 	// empty players array and reset reaction time
 	if (players.length === 2) {
 		players = [];
-		savedReactionTime = 100;
+		savedReactionTime = {};
 	}
 
 	playerClicked = playerClicked + player.clicked;
