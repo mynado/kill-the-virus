@@ -75,7 +75,7 @@ const showReactionTime = (players) => {
 	reactionTimeList.innerHTML = null;
 	reactionTimeList.classList.remove('hide');
 	roundEl.classList.remove('hide')
-	roundEl.innerText = `${players[0].rounds}`;
+	roundEl.innerText = `${players[0].rounds}/10`;
 	players.forEach(player => {
 		reactionTimeList.innerHTML += `<li>${player.name}: ${player.reactionTime}</li>`
 	})
@@ -93,9 +93,11 @@ const showScore = (players) => {
 // show winner and play again button
 const showWinner = (winner, tie, players) => {
 	if (players.length === 2) {
+		console.log(players)
 		document.querySelector('#winner-wrapper').classList.remove('hide');
 		if (tie) {
 			document.querySelector('#winner').innerText = tie;
+			document.querySelector('#end-score').innerText += `${players[0].score} - ${players[1].score}`
 			//reset
 			virusShown = null;
 			virusClicked = null;
@@ -104,6 +106,7 @@ const showWinner = (winner, tie, players) => {
 			socket.emit('reset')
 		} else {
 			document.querySelector('#winner').innerText = `The winner is ${winner}, congrats!`;
+			document.querySelector('#end-score').innerText += `${players[0].score} - ${players[1].score}`
 			// reset
 			virusShown = null;
 			virusClicked = null;
