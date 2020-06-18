@@ -145,7 +145,6 @@ document.querySelector('#play-again').addEventListener('click', e => {
 // Click virus
 gameBoardEl.addEventListener('click', e => {
 	e.preventDefault();
-
 	if (e.target.tagName === 'IMG') {
 		virusClicked = Date.now();
 		reactionTime = (virusClicked - virusShown) / 1000;

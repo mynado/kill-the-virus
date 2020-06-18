@@ -41,7 +41,6 @@ function getRandomData(width, height) {
 	// random time
 	let randomNumber = Math.round(Math.random() * 3);
 	let time = randomNumber * 1000;
-
 	randomData = {
 		x: randomX,
 		y: randomY,
@@ -61,13 +60,11 @@ function handleMatchPlayer(players) {
 	if (players.length === 1) {
 		this.emit('waiting-for-player')
 	}
-
 	if (players.length === 2) {
 		userIds.forEach(id => {
 			io.to(id).emit('start-game', players)
 		})
 	}
-
 	if (players.length > 2) {
 		delete users[this.id];
 		this.emit('too-many-players', players)
@@ -159,7 +156,6 @@ function handleClickVirus(playerData) {
 	// compare reaction time and save new time
 	if (players.length === 2) {
 		let fastPlayerId = Object.keys(savedReactionTime).reduce((a, b) => savedReactionTime[a] < savedReactionTime[b] ? a : b);
-
 		let slowPlayerId = Object.keys(savedReactionTime).reduce((a, b) => savedReactionTime[a] > savedReactionTime[b] ? a : b);
 
 		players.forEach(player => {
