@@ -1,8 +1,6 @@
 /**
  * Socket Controller
  */
-const debug = require('debug')('kill-the-virus:socket_controller');
-
 let io = null;
 let users = {};
 let players = [];
@@ -29,7 +27,6 @@ function getOnlinePlayers() {
  * Handle disconnection
  */
 function handleUserDisconnect() {
-	debug('Someone left the game.', users[this.id]);
 	delete users[this.id];
 }
 
@@ -207,7 +204,6 @@ function handleClickVirus(playerData) {
  * Handle Register User
  */
 function handleRegisterUser(username, callback) {
-	debug(`Player ${username} is connected to .`);
 	// add id and username to users
 	if (Object.keys(users).length >= 0 ) {
 		users[this.id] = username;
@@ -235,7 +231,6 @@ function handleRegisterUser(username, callback) {
 }
 
 module.exports = function(socket) {
-	debug('A player connected!', socket.id);
 	io = this;
 	socket.on('disconnect', handleUserDisconnect);
 	socket.on('register-user', handleRegisterUser);

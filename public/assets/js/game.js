@@ -93,7 +93,6 @@ const showScore = (players) => {
 // show winner and play again button
 const showWinner = (winner, tie, players) => {
 	if (players.length === 2) {
-		console.log(players)
 		document.querySelector('#winner-wrapper').classList.remove('hide');
 		if (tie) {
 			document.querySelector('#winner').innerText = tie;
